@@ -34,6 +34,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 // MARK: - Simple status UI
 struct CompanionRootView: View {
+    @State private var isConnected = false
+
     var body: some View {
         VStack(spacing: 24) {
             Image(systemName: "heart.fill")
@@ -41,21 +43,24 @@ struct CompanionRootView: View {
                 .foregroundColor(.red)
             Text("Trio Garmin Companion")
                 .font(.title2.bold())
-            Text("Running in the background.\nKeep this app open to sync\nglucose data to your Garmin watch.")
-                .multilineTextAlignment(.center)
-                .foregroundColor(.secondary)
-            Button(action: {
-                GarminConnectService.shared.connectWatch()
-            }) {
-                Label("Connect Garmin Watch", systemImage: "applewatch")
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(12)
+
+            if isConnected {
+                Label("Watch connected", systemImage: "checkmark.circle.fill")
+                    .foregroundColor(.green)
+                    .font(.headline)
+            } else {
+                Text("Open **Trio Glucose** on your Garmin watch to connect.\nThen keep this app running in the background.")
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.secondary)
             }
-            .padding(.horizontal)
         }
         .padding()
+        .onReceive(NotificationCenter.default.publisher(for: .garminDeviceConnected)) { _ in
+            isConnected = true
+        }
     }
+}
+
+extension Notification.Name {
+    static let garminDeviceConnected = Notification.Name("garminDeviceConnected")
 }

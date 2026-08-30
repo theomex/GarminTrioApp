@@ -1,6 +1,10 @@
 // GarminConnectService.swift
 // Bridges Trio HealthKit data to the Garmin watch via the
 // Connect IQ Companion App SDK (github.com/garmin/connectiq-companion-app-sdk-ios)
+//
+// Device discovery: the watch app initiates contact by sending a "hello" or
+// "request_update" message. We capture the IQDevice from that first message
+// and register for app messages on it. No showDeviceSelection() required.
 
 import Foundation
 import UIKit
@@ -20,7 +24,7 @@ final class GarminConnectService: NSObject {
     private let watchAppID = UUID(uuidString: "a3d8e4f2-1b5c-4d9a-8e7f-2c1b0a9d8e7f")!
 
     weak var delegate: GarminConnectServiceDelegate?
-    private var connectedDevices: [IQDevice] = []
+    private(set) var connectedDevices: [IQDevice] = []
 
     private override init() { super.init() }
 
@@ -31,38 +35,34 @@ final class GarminConnectService: NSObject {
         )
     }
 
-    func connectWatch() {
-        // Try the SDK's device picker first; if Garmin Connect isn't detected,
-        // fall back to opening the app directly so the user can launch it.
-        let schemes = ["gcm", "garminconnect", "garmin-connect", "garmin"]
-        let canOpen = schemes.contains { URLComponents(string: "\($0)://")
-            .flatMap { $0.url }
-            .map { UIApplication.shared.canOpenURL($0) } ?? false }
-
-        if canOpen {
-            ConnectIQ.sharedInstance()?.showDeviceSelection()
-        } else {
-            // Open Garmin Connect from the App Store as a fallback
-            let appStoreURL = URL(string: "https://apps.apple.com/app/garmin-connect/id583446403")!
-            UIApplication.shared.open(appStoreURL)
-        }
-    }
-
-    // Called from AppDelegate.application(_:open:options:)
+    // Called from AppDelegate — handles URL callbacks from Garmin Connect
     func handleOpenURL(_ url: URL) -> Bool {
         guard let devices = ConnectIQ.sharedInstance()?
-            .parseDeviceSelectionResponse(from: url) as? [IQDevice] else {
+            .parseDeviceSelectionResponse(from: url) as? [IQDevice],
+              !devices.isEmpty else {
             return false
         }
+        registerDevices(devices)
+        return true
+    }
+
+    // Called when the watch sends us its first message — we learn the device from it
+    func registerDevice(_ device: IQDevice) {
+        guard !connectedDevices.contains(where: { $0.uuid == device.uuid }) else { return }
+        registerDevices(connectedDevices + [device])
+    }
+
+    private func registerDevices(_ devices: [IQDevice]) {
         connectedDevices = devices
         delegate?.deviceStatusChanged(connected: !devices.isEmpty)
-
+        if !devices.isEmpty {
+            NotificationCenter.default.post(name: .garminDeviceConnected, object: nil)
+        }
         for device in devices {
             if let app = IQApp(uuid: watchAppID, store: UUID(), device: device) {
                 ConnectIQ.sharedInstance()?.register(forAppMessages: app, delegate: self)
             }
         }
-        return true
     }
 
     // MARK: - Sending data to watch
@@ -84,6 +84,9 @@ final class GarminConnectService: NSObject {
 // MARK: - Receiving messages from the watch
 extension GarminConnectService: IQAppMessageDelegate {
     func receivedMessage(_ message: Any, from app: IQApp) {
+        // Learn the device from the first message the watch sends
+        registerDevice(app.device)
+
         guard let dict = message as? [String: Any],
               let type = dict["type"] as? String else { return }
 
