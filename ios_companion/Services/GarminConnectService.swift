@@ -31,7 +31,7 @@ final class GarminConnectService: NSObject {
         )
         // Open Garmin Connect on the iPhone so the user can select their watch.
         // The result comes back via the URL scheme handled in handleOpenURL(_:).
-        ConnectIQ.sharedInstance()?.showConnectIQDeviceSelection()
+        ConnectIQ.sharedInstance()?.showDeviceSelection()
     }
 
     // Called from AppDelegate.application(_:open:options:)
