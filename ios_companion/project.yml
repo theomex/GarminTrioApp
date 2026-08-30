@@ -32,6 +32,8 @@ targets:
           - gcm
           - garmin-connect
           - connectiq
+          - garminconnect
+          - garmin
     dependencies:
       - framework: ../connectiq-companion-app-sdk-ios/ConnectIQ.xcframework
         embed: true

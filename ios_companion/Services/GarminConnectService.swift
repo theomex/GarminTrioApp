@@ -3,8 +3,8 @@
 // Connect IQ Companion App SDK (github.com/garmin/connectiq-companion-app-sdk-ios)
 
 import Foundation
+import UIKit
 import ConnectIQ
-import HealthKit
 
 // MARK: - Delegate protocol
 protocol GarminConnectServiceDelegate: AnyObject {
@@ -32,7 +32,20 @@ final class GarminConnectService: NSObject {
     }
 
     func connectWatch() {
-        ConnectIQ.sharedInstance()?.showDeviceSelection()
+        // Try the SDK's device picker first; if Garmin Connect isn't detected,
+        // fall back to opening the app directly so the user can launch it.
+        let schemes = ["gcm", "garminconnect", "garmin-connect", "garmin"]
+        let canOpen = schemes.contains { URLComponents(string: "\($0)://")
+            .flatMap { $0.url }
+            .map { UIApplication.shared.canOpenURL($0) } ?? false }
+
+        if canOpen {
+            ConnectIQ.sharedInstance()?.showDeviceSelection()
+        } else {
+            // Open Garmin Connect from the App Store as a fallback
+            let appStoreURL = URL(string: "https://apps.apple.com/app/garmin-connect/id583446403")!
+            UIApplication.shared.open(appStoreURL)
+        }
     }
 
     // Called from AppDelegate.application(_:open:options:)
