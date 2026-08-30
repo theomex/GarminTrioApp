@@ -13,9 +13,7 @@ final class TrioBridgeService: GarminConnectServiceDelegate {
     private var refreshTimer: Timer?
     private let garmin = GarminConnectService.shared
 
-    // Trio writes glucose to HK as blood glucose samples
     private let glucoseType = HKQuantityType.quantityType(forIdentifier: .bloodGlucose)!
-    private let iobType     = HKQuantityType.quantityType(forIdentifier: .insulinDelivery)!
 
     private init() {}
 
@@ -28,8 +26,8 @@ final class TrioBridgeService: GarminConnectServiceDelegate {
 
     // MARK: - HealthKit
     private func requestHealthKitPermissions() {
-        let readTypes: Set<HKObjectType> = [glucoseType, iobType]
-        healthKit.requestAuthorization(toShare: nil, read: readTypes) { _, _ in
+        guard HKHealthStore.isHealthDataAvailable() else { return }
+        healthKit.requestAuthorization(toShare: nil, read: [glucoseType]) { _, _ in
             self.fetchAndSend()
         }
     }

@@ -22,7 +22,7 @@ targets:
         UILaunchStoryboardName: LaunchScreen
         UIBackgroundModes:
           - fetch
-        NSHealthShareUsageDescription: "Reads blood glucose and insulin data from Trio to send to your Garmin watch."
+        NSHealthShareUsageDescription: "Reads blood glucose data from Trio to send to your Garmin watch."
         NSHealthUpdateUsageDescription: "Not used."
         CFBundleURLTypes:
           - CFBundleURLIdentifier: com.mitch.triogarmin
