@@ -39,8 +39,8 @@ Your Garmin Watch — shows glucose, trend, IOB, COB, pump status
 Open Terminal on your Mac and run:
 
 ```bash
-git clone https://github.com/theomex/TrioLearn.git
-cd TrioLearn
+git clone https://github.com/theomex/GarminTrioApp.git
+cd GarminTrioApp
 ```
 
 ---
@@ -85,7 +85,7 @@ sudo xcode-select --switch /Applications/Xcode.app
 This is the library that lets the iOS app talk to your Garmin watch.
 
 ```bash
-cd ~/TrioLearn
+cd ~/GarminTrioApp
 git clone https://github.com/garmin/connectiq-companion-app-sdk-ios.git
 ```
 
@@ -96,7 +96,7 @@ git clone https://github.com/garmin/connectiq-companion-app-sdk-ios.git
 ### Open the project
 
 ```bash
-open ios/TrioGarminCompanion
+open ios_companion
 ```
 
 Xcode will open. If it asks you to install additional components, click Install.
@@ -109,7 +109,7 @@ Xcode will open. If it asks you to install additional components, click Install.
 4. Scroll down to **Frameworks, Libraries, and Embedded Content**
 5. Click **+**
 6. Click **Add Other… → Add Files…**
-7. Navigate to `~/TrioLearn/connectiq-companion-app-sdk-ios/ConnectIQ.xcframework` and click **Add**
+7. Navigate to `~/GarminTrioApp/connectiq-companion-app-sdk-ios/ConnectIQ.xcframework` and click **Add**
 8. Make sure it shows **Embed & Sign** (not "Do Not Embed")
 
 ### Add the URL scheme (required by the Garmin SDK)
@@ -185,10 +185,10 @@ You need this once to sign the watch app for sideloading. It's free.
 ### Open the project
 
 ```bash
-code ~/TrioLearn/garmin
+code ~/GarminTrioApp
 ```
 
-VS Code will open the `garmin/` folder. The Monkey C extension will detect `manifest.xml`.
+VS Code will open the repo folder. The Monkey C extension will detect `manifest.xml`.
 
 ### Add a placeholder launcher icon
 
@@ -202,10 +202,10 @@ img = Image.new('RGB', (70, 70), color=(200, 0, 0))
 img.save('$(pwd)/resources/drawables/launcher_icon.png')
 " 2>/dev/null || \
   curl -s "https://via.placeholder.com/70/CC0000/FFFFFF.png" \
-       -o ~/TrioLearn/garmin/resources/drawables/launcher_icon.png
+       -o ~/GarminTrioApp/resources/drawables/launcher_icon.png
 ```
 
-Or simply copy any 70×70 PNG into `garmin/resources/drawables/launcher_icon.png` yourself.
+Or simply copy any 70×70 PNG into `resources/drawables/launcher_icon.png` yourself.
 
 ### Build for your specific watch model
 
@@ -218,7 +218,7 @@ If your model isn't listed, add it to the `<iq:products>` section in `manifest.x
 1. Connect your watch to your Mac with its USB charging cable
 2. It will appear as a USB drive in Finder (named after your watch model)
 3. Open it in Finder → navigate to the **GARMIN** folder → open **APPS**
-4. Drag `~/TrioLearn/garmin/bin/TrioGlucose.prg` into the **APPS** folder
+4. Drag `~/GarminTrioApp/bin/TrioGlucose.prg` into the **APPS** folder
 5. Eject the watch drive in Finder
 6. The **Trio Glucose** app will appear in your watch's app list immediately
 
