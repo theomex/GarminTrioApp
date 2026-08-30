@@ -32,6 +32,9 @@ targets:
           - gcm
           - garmin-connect
           - connectiq
+    dependencies:
+      - framework: ../connectiq-companion-app-sdk-ios/ConnectIQ.xcframework
+        embed: true
     entitlements:
       path: SupportingFiles/TrioGarminCompanion.entitlements
     settings:
