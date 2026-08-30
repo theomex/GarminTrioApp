@@ -35,7 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 // MARK: - Simple status UI
 struct CompanionRootView: View {
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 24) {
             Image(systemName: "heart.fill")
                 .font(.system(size: 60))
                 .foregroundColor(.red)
@@ -44,6 +44,17 @@ struct CompanionRootView: View {
             Text("Running in the background.\nKeep this app open to sync\nglucose data to your Garmin watch.")
                 .multilineTextAlignment(.center)
                 .foregroundColor(.secondary)
+            Button(action: {
+                GarminConnectService.shared.connectWatch()
+            }) {
+                Label("Connect Garmin Watch", systemImage: "applewatch")
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(12)
+            }
+            .padding(.horizontal)
         }
         .padding()
     }
