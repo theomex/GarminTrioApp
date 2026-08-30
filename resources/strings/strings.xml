@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<strings>
+  <string id="AppName">Trio Glucose</string>
+  <string id="BolusTitle">Bolus Dose</string>
+  <string id="Waiting">Waiting...</string>
+</strings>
