@@ -29,25 +29,26 @@ final class GarminConnectService: NSObject {
             withUrlScheme: "trio-garmin",
             uiOverrideDelegate: nil
         )
-        refreshDevices()
+        // Open Garmin Connect on the iPhone so the user can select their watch.
+        // The result comes back via the URL scheme handled in handleOpenURL(_:).
+        ConnectIQ.sharedInstance()?.showConnectIQDeviceSelection()
     }
 
+    // Called from AppDelegate.application(_:open:options:)
     func handleOpenURL(_ url: URL) -> Bool {
-        // URL callbacks handled automatically by the SDK in v2+
-        return true
-    }
-
-    func refreshDevices() {
-        let devices = ConnectIQ.sharedInstance()?.connectedDevices() as? [IQDevice] ?? []
+        guard let devices = ConnectIQ.sharedInstance()?
+            .parseDeviceSelectionResponse(from: url) as? [IQDevice] else {
+            return false
+        }
         connectedDevices = devices
         delegate?.deviceStatusChanged(connected: !devices.isEmpty)
 
-        // Register for messages on each device's app instance
         for device in devices {
             if let app = IQApp(uuid: watchAppID, store: UUID(), device: device) {
                 ConnectIQ.sharedInstance()?.register(forAppMessages: app, delegate: self)
             }
         }
+        return true
     }
 
     // MARK: - Sending data to watch
@@ -58,7 +59,7 @@ final class GarminConnectService: NSObject {
     private func send(_ dict: [String: Any]) {
         guard let device = connectedDevices.first,
               let app = IQApp(uuid: watchAppID, store: UUID(), device: device) else { return }
-        ConnectIQ.sharedInstance()?.sendMessage(dict, to: app, progress: nil) { result in
+        ConnectIQ.sharedInstance()?.sendMessage(dict, toApp: app, progress: nil) { result in
             if result != .success {
                 print("[GarminConnectService] Send failed: \(result.rawValue)")
             }
@@ -68,7 +69,7 @@ final class GarminConnectService: NSObject {
 
 // MARK: - Receiving messages from the watch
 extension GarminConnectService: IQAppMessageDelegate {
-    func receivedMessage(_ message: Any, from app: IQApp) {
+    func receivedMessage(_ message: Any, fromApp app: IQApp) {
         guard let dict = message as? [String: Any],
               let type = dict["type"] as? String else { return }
 
