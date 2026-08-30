@@ -69,7 +69,7 @@ final class GarminConnectService: NSObject {
 
 // MARK: - Receiving messages from the watch
 extension GarminConnectService: IQAppMessageDelegate {
-    func receivedMessage(_ message: Any, fromApp app: IQApp) {
+    func receivedMessage(_ message: Any, from app: IQApp) {
         guard let dict = message as? [String: Any],
               let type = dict["type"] as? String else { return }
 
