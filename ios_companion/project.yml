@@ -28,6 +28,10 @@ targets:
           - CFBundleURLIdentifier: com.mitch.triogarmin
             CFBundleURLSchemes:
               - trio-garmin
+        LSApplicationQueriesSchemes:
+          - gcm
+          - garmin-connect
+          - connectiq
     entitlements:
       path: SupportingFiles/TrioGarminCompanion.entitlements
     settings:
