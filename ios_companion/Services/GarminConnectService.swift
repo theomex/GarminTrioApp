@@ -59,7 +59,7 @@ final class GarminConnectService: NSObject {
     private func send(_ dict: [String: Any]) {
         guard let device = connectedDevices.first,
               let app = IQApp(uuid: watchAppID, store: UUID(), device: device) else { return }
-        ConnectIQ.sharedInstance()?.sendMessage(dict, toApp: app, progress: nil) { result in
+        ConnectIQ.sharedInstance()?.sendMessage(dict, to: app, progress: nil) { result in
             if result != .success {
                 print("[GarminConnectService] Send failed: \(result.rawValue)")
             }
