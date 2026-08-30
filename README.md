@@ -93,80 +93,41 @@ git clone https://github.com/garmin/connectiq-companion-app-sdk-ios.git
 
 ## Step 6 — Build the iOS companion app in Xcode
 
-### Create a new Xcode project
+The Xcode project is now pre-configured — URL scheme, HealthKit, and bundle ID are all already set up. You just need to run one command to generate it, add the Garmin framework, pick your Team, and hit build.
 
-1. Open **Xcode** from your Applications folder
-2. Click **Create New Project**
-3. Choose **iOS → App** → click **Next**
-4. Fill in the fields:
-   - **Product Name**: `TrioGarminCompanion`
-   - **Team**: your Apple ID (from the dropdown)
-   - **Organization Identifier**: `com.yourname` (anything, e.g. `com.mitch`)
-   - **Interface**: SwiftUI
-   - **Language**: Swift
-   - Leave "Use Core Data" and "Include Tests" **unchecked**
-5. Click **Next**, then save the project to your **Desktop** — easy to find
-6. Xcode will open the new empty project
+### Generate the Xcode project (one command)
 
-### Find the ios_companion folder in Finder
-
-In Terminal, `cd` into the GarminTrioApp folder (wherever you cloned it) and run:
+In Terminal, `cd` into GarminTrioApp then run:
 
 ```bash
-open ios_companion
+brew install xcodegen
+cd ios_companion
+xcodegen generate
+open TrioGarminCompanion.xcodeproj
 ```
 
-This opens the `ios_companion` folder in Finder. Leave that Finder window open — you'll need it in the next step.
+Xcode will open with everything already configured.
 
-### Add the companion app source files
+### Add the Garmin SDK framework (still required — it's a binary)
 
-1. In Xcode's left file panel, right-click the **TrioGarminCompanion** folder (the yellow one) → **Add Files to "TrioGarminCompanion"…**
-2. In the file picker that appears, navigate to the **ios_companion** folder you just opened in Finder (it'll be in your sidebar under Recent or you can drag its path from Finder into the file picker)
-3. Press **Cmd+A** to select all files and folders inside it
-4. Make sure **"Copy items if needed"** is checked
-5. Click **Add**
-6. Delete the auto-generated `ContentView.swift` that Xcode created — right-click it → **Delete → Move to Trash**
+1. In Xcode's file list, click the **TrioGarminCompanion** project (top item, blue icon)
+2. Select the **TrioGarminCompanion** target → **General** tab
+3. Scroll down to **Frameworks, Libraries, and Embedded Content**
+4. Click **+** → **Add Other… → Add Files…**
+5. Navigate to where you cloned the Garmin SDK in Step 5: `connectiq-companion-app-sdk-ios/ConnectIQ.xcframework`
+6. Click **Add** — make sure it shows **Embed & Sign**
 
-### Add the Garmin SDK framework
-
-1. In the Xcode file list on the left, click the **TrioGarminCompanion** project (top item)
-2. Select the **TrioGarminCompanion** target
-3. Click the **General** tab
-4. Scroll down to **Frameworks, Libraries, and Embedded Content**
-5. Click **+**
-6. Click **Add Other… → Add Files…**
-7. Navigate to `~/GarminTrioApp/connectiq-companion-app-sdk-ios/ConnectIQ.xcframework` and click **Add**
-8. Make sure it shows **Embed & Sign** (not "Do Not Embed")
-
-### Add the URL scheme (required by the Garmin SDK)
-
-1. Still in the **TrioGarminCompanion** target, click the **Info** tab
-2. Expand **URL Types** at the bottom
-3. Click **+** and fill in:
-   - **Identifier**: `com.yourname.triogarmin` (anything unique)
-   - **URL Schemes**: `trio-garmin`
-
-### Sign the app with your Apple ID
+### Set your Team and install on your iPhone
 
 1. Click the **Signing & Capabilities** tab
 2. Under **Team**, choose your Apple ID from the dropdown
-3. Xcode will automatically create a signing certificate — if it says "Fix Issue", click it
+3. If it says "Fix Issue", click it — Xcode will register the app automatically
+4. Plug your iPhone in, pick it from the device selector at the top of Xcode
+5. Press **Cmd+R** to build and install
+6. On your iPhone: **Settings → General → VPN & Device Management** → tap your Apple ID → tap **Trust**
+7. Open **Trio Garmin Companion** on your iPhone and grant the HealthKit permissions it asks for
 
-### Enable HealthKit capability
-
-1. Still on **Signing & Capabilities**
-2. Click **+ Capability** (top left of that tab)
-3. Search **HealthKit** and double-click it to add it
-
-### Install on your iPhone
-
-1. Plug your iPhone into your Mac (or use wireless: Window → Devices and Simulators → pair)
-2. At the top of Xcode, click the device selector and pick your iPhone
-3. Press **Cmd+R** to build and install
-4. On your iPhone, go to **Settings → General → VPN & Device Management** → find your Apple ID developer certificate → tap **Trust**
-5. Open the **Trio Garmin** app on your iPhone — grant the HealthKit permissions it asks for
-
-> Keep this app running in the background whenever you want watch data. You can put it in the background; it will wake periodically via background refresh.
+> Keep this app running in the background whenever you're wearing the watch.
 
 ---
 

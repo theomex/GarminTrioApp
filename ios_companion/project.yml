@@ -1,0 +1,38 @@
+name: TrioGarminCompanion
+options:
+  deploymentTarget:
+    iOS: "16.0"
+  xcodeVersion: "15"
+
+targets:
+  TrioGarminCompanion:
+    type: application
+    platform: iOS
+    deploymentTarget: "16.0"
+    sources:
+      - path: App
+      - path: Models
+      - path: Services
+    info:
+      path: SupportingFiles/Info.plist
+      properties:
+        CFBundleDisplayName: Trio Garmin
+        CFBundleShortVersionString: "1.0"
+        CFBundleVersion: "1"
+        UILaunchStoryboardName: LaunchScreen
+        UIBackgroundModes:
+          - fetch
+        NSHealthShareUsageDescription: "Reads blood glucose and insulin data from Trio to send to your Garmin watch."
+        NSHealthUpdateUsageDescription: "Not used."
+        CFBundleURLTypes:
+          - CFBundleURLIdentifier: com.mitch.triogarmin
+            CFBundleURLSchemes:
+              - trio-garmin
+    entitlements:
+      path: SupportingFiles/TrioGarminCompanion.entitlements
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.mitch.triogarmincompanion
+        SWIFT_VERSION: "5.0"
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: ""
