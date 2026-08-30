@@ -93,13 +93,29 @@ git clone https://github.com/garmin/connectiq-companion-app-sdk-ios.git
 
 ## Step 6 — Build the iOS companion app in Xcode
 
-### Open the project
+### Create a new Xcode project
 
-```bash
-open ios_companion
-```
+1. Open **Xcode** from your Applications folder
+2. Click **Create New Project**
+3. Choose **iOS → App** → click **Next**
+4. Fill in the fields:
+   - **Product Name**: `TrioGarminCompanion`
+   - **Team**: your Apple ID (from the dropdown)
+   - **Organization Identifier**: `com.yourname` (anything, e.g. `com.mitch`)
+   - **Interface**: SwiftUI
+   - **Language**: Swift
+   - Leave "Use Core Data" and "Include Tests" **unchecked**
+5. Click **Next**, then save the project **inside** `~/GarminTrioApp/` — create a folder called `xcode_project` there and save into it
+6. Xcode will open the new empty project
 
-Xcode will open. If it asks you to install additional components, click Install.
+### Add the companion app source files
+
+1. In Xcode's left file panel, right-click the **TrioGarminCompanion** folder (the yellow one) → **Add Files to "TrioGarminCompanion"…**
+2. Navigate to `~/GarminTrioApp/ios_companion/`
+3. Select **all files and folders** inside it (Cmd+A to select all)
+4. Make sure **"Copy items if needed"** is checked
+5. Click **Add**
+6. Delete the auto-generated `ContentView.swift` that Xcode created — right-click it → **Delete → Move to Trash**
 
 ### Add the Garmin SDK framework
 
