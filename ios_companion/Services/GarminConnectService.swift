@@ -33,7 +33,7 @@ final class GarminConnectService: NSObject {
     }
 
     func handleOpenURL(_ url: URL) -> Bool {
-        ConnectIQ.sharedInstance()?.applicationURL(url)
+        // URL callbacks handled automatically by the SDK in v2+
         return true
     }
 
